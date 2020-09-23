@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container">
+    <div class="row">
+         You are logged in as {{username}}
+         <a href="{{ url_for('user_controller.logout') }}">Logout </a>
+    </div>
+</div>
+{% endblock %}
