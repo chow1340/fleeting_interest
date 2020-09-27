@@ -20,6 +20,7 @@ def index():
     
 
 if __name__ == '__main__':
-    print("RANNNNN")
+    print("RANNNNN xd dab")
+    # TODO change this key
     app.secret_key = 'mysecret'
     app.run(debug=True, host='192.168.2.40')
