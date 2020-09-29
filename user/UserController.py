@@ -1,13 +1,18 @@
 from flask import Flask, render_template, url_for, request, session, redirect, Blueprint
 import bcrypt
 from config.MongoConnectionConfig import MongoConnectionConfig
+from bson import json_util, ObjectId
 from bson.json_util import dumps
+import json
 from datetime import datetime
+
 
 user_controller = Blueprint('user_controller', __name__)
 
-mongoConnection = MongoConnectionConfig()
+mongoConnection = MongoConnectionConfig.getInstance()
 mongo = mongoConnection.connect()
+users = mongo.db.users
+
 
 @user_controller.route('/api/user/test', methods=['POST', 'GET'])
 def test():
@@ -17,21 +22,23 @@ def test():
 
 @user_controller.route('/api/user/login', methods=['POST'])
 def login():
-    print(session['phone_number'])
     users = mongo.db.users
     login_user = users.find_one({'phone_number': request.get_json()['params']['phone_number']})
  
     if login_user:
         if bcrypt.hashpw(request.get_json()['params']['password'].encode('utf-8'), login_user['password']) == login_user['password']:
             session['phone_number'] = request.get_json()['params']['phone_number']
-            return "Login Successful"
+            # objectId = json_util.dumps(ObjectId(login_user['_id']), default=json_util.default)
+            objectId = json.loads(json_util.dumps(login_user['_id']))
+            session['_id'] = objectId['$oid']
+            return "Login Successsful"
 
     return 'Invalid phone_number or password'
 
 @user_controller.route('/api/user/logout')
 def logout():
     session.clear()
-    return "ok"
+    return "logout successful"
 
 @user_controller.route('/api/user/register', methods=['POST', 'GET'])
 def register():
@@ -41,13 +48,16 @@ def register():
 
         if existing_user is None:
             hashpass = bcrypt.hashpw(request.get_json()['params']['password'].encode('utf-8'), bcrypt.gensalt())
-            users.insert({
+            user = users.insert({
                 'phone_number':request.get_json()['params']['phone_number'], 
                 'password': hashpass,
-                'date_created': datetime.now()
+                'date_created': datetime.now(),
+                'first_name': "",
+                'last_name' : "",
                 })
             session['phone_number'] =  request.get_json()['params']['phone_number']
-            # return redirect(url_for('index'))
+            session['_id'] = ObjectId(user['_id'])
+
             return "phone_number has been registered"
 
         return 'That phone_number already exists!'
@@ -55,9 +65,24 @@ def register():
     # return render_template('register.html')
     return "phone_number has beens registered"
 
-@user_controller.route('/api/user/findByPhone', methods=['GET'])
-def findByPhone():
+
+@user_controller.route('/api/user/getCurrentUser', methods=['GET'])
+def getCurrentUser():
     currentSessionNumber = session['phone_number']
     users = mongo.db.users
     currentUser = dumps(users.find_one({'phone_number' : currentSessionNumber}, {"password" : False}))
     return currentUser
+
+# TODO add error handling
+@user_controller.route('/api/user/editProfile', methods=['POST'])
+def editProfile():
+    users = mongo.db.users
+    newValues = request.get_json()['params']['currentProfile']
+
+    if newValues:
+        users.update_one({'_id' : ObjectId(newValues['_id']['$oid'])}, {'$set': {'first_name' : newValues['first_name'], \
+        'last_name' : newValues['last_name']}}, upsert=False) 
+    
+    return "Updated"
+    
+
