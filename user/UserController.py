@@ -80,9 +80,10 @@ def editProfile():
     newValues = request.get_json()['params']['currentProfile']
 
     if newValues:
-        users.update_one({'_id' : ObjectId(newValues['_id']['$oid'])}, {'$set': {'first_name' : newValues['first_name'], \
-        'last_name' : newValues['last_name']}}, upsert=False) 
-    
-    return "Updated"
+        user = dumps(users.find_one_and_update({'_id' : ObjectId(newValues['_id']['$oid'])}, {'$set': {'first_name' : newValues['first_name'], \
+        'last_name' : newValues['last_name']}}, upsert=False))
+
+
+    return user 
     
 

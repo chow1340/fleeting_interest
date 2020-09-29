@@ -1,7 +1,9 @@
 from config.MongoConnectionConfig import MongoConnectionConfig
+from ServiceClass import ServiceClass
 from bson import json_util, ObjectId
+from bson.json_util import dumps
 
-class LocationService(object):
+class LocationService(ServiceClass):
 
     __instance = None
 
@@ -18,12 +20,11 @@ class LocationService(object):
          raise Exception("This class is a singleton!")
       else:
          LocationService.__instance = self    
-         self.mongoConnection = MongoConnectionConfig.getInstance()
-         self.mongo = self.mongoConnection.connect()
-         self.users = self.mongo.db.users
 
     def updateLocation(self, location, currentId):
-        self.users.update_one({'_id' : ObjectId(currentId)}, {'$set': {'location':location}}, upsert=False) 
-        return "Location has been successfully updated"
+        user = dumps(self.users.find_one_and_update({'_id' : ObjectId(currentId)}, {'$set': {'location':location}}, upsert=False, projection={'password': False})) 
+        return user
          
-     
+    def updateGeocode(self, geocode, currentId):
+        user = dumps(self.users.find_one_and_update({'_id' : ObjectId(currentId)}, {'$set': {'geocode':geocode}}, upsert=False, projection={'password': False})) 
+        return user

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, session, redirect, Blueprint
+from ServiceClass import ServiceClass
 
-
-class UserService():
+class UserService(ServiceClass):
 
     __instance = None
 

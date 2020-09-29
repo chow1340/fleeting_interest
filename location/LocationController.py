@@ -11,7 +11,6 @@ locationService = LocationService.getInstance()
 
 @location_controller.route('/api/location/updateLocation', methods=['POST'])
 def updateLocation():
-    print("ran")
-    currentUser = userService.getCurrentUser()
     locationService.updateLocation(request.get_json()['params']['location'], userService.getCurrentId())
-    return "xd"
+    user = locationService.updateGeocode(request.get_json()['params']['geocode'], userService.getCurrentId())
+    return user
