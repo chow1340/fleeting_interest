@@ -4,7 +4,6 @@ from ServiceClass import ServiceClass
 class UserService(ServiceClass):
 
     __instance = None
-
     @staticmethod
     def getInstance():
         """ Static access method. """

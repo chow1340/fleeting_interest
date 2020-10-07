@@ -31,7 +31,7 @@ def login():
             # objectId = json_util.dumps(ObjectId(login_user['_id']), default=json_util.default)
             objectId = json.loads(json_util.dumps(login_user['_id']))
             session['_id'] = objectId['$oid']
-            return "Login Successsful"
+            return "Login Successful"
 
     return 'Invalid phone_number or password'
 
@@ -68,6 +68,10 @@ def register():
 
 @user_controller.route('/api/user/getCurrentUser', methods=['GET'])
 def getCurrentUser():
+    print(session.get('phone_number'))
+    if session.get('phone_number') is None:
+        return "Session does not exist"
+
     currentSessionNumber = session['phone_number']
     users = mongo.db.users
     currentUser = dumps(users.find_one({'phone_number' : currentSessionNumber}, {"password" : False}))
@@ -81,7 +85,7 @@ def editProfile():
 
     if newValues:
         user = dumps(users.find_one_and_update({'_id' : ObjectId(newValues['_id']['$oid'])}, {'$set': {'first_name' : newValues['first_name'], \
-        'last_name' : newValues['last_name']}}, upsert=False))
+        'last_name' : newValues['last_name']}}, upsert=False, projection={'password': False}))
 
 
     return user 
