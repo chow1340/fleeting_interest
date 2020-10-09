@@ -18,11 +18,19 @@ def uploadProfilePicture():
 
         return filename
 
+@image_controller.route('/api/image/deleteImage', methods=['POST'])
+def deleteImage():
+    if request.method == 'POST':
+        fileKey = request.get_json()['params']['fileKey']
+        imageService.deleteImageFromS3(fileKey)
+        imageService.deleteImageFromUserByPicture(userService.getCurrentId(), fileKey)
+        return "Image has been deleted"
+
+
 @image_controller.route('/api/image/updatePictureArrayOrder', methods=['POST'])
 def updatePictureArrayOrder():
     newIndex = request.get_json()['params']['index']
     filename = request.get_json()['params']['uri']
-    print(newIndex, filename)
     imageService.setImageToIndex(userService.getCurrentId(), newIndex, filename)
     return "ye"
 
@@ -40,9 +48,3 @@ def uploadFileAndUpdatePictureArrayOrder():
 
 
 
-# @image_controller.route('/api/image/pushToPictureArray', methods=['POST'])
-# def pushToPictureArray():
-#     file = request.files['file']
-#     filename = imageService.uploadImageToS3(file)
-#     imageService.pushImageToUser(userService.getCurrentId(), filename)
-#     return filename

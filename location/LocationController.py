@@ -13,4 +13,5 @@ locationService = LocationService.getInstance()
 def updateLocation():
     locationService.updateLocation(request.get_json()['params']['location'], userService.getCurrentId())
     user = locationService.updateGeocode(request.get_json()['params']['geocode'], userService.getCurrentId())
+    print(type(user))
     return user

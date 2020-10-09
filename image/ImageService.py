@@ -28,6 +28,7 @@ class ImageService(ServiceClass):
          self.mongoConnection = MongoConnectionConfig.getInstance()
          self.mongo = self.mongoConnection.connect()
          self.users = self.mongo.db.users
+         self.s3 = boto3.resource('s3')
 
     def uploadImageToS3(self, file):
         s3 = boto3.resource('s3')
@@ -36,12 +37,17 @@ class ImageService(ServiceClass):
 
         return file.filename
 
+    def deleteImageFromS3(self, fileKey):
+        return self.s3.Object(S3_BUCKETNAME, fileKey).delete()
+
     def getPictureArraySize(self, currentId):
         user = self.users.find_one({'_id' : ObjectId(currentId)})
         if "picture" in user:
             return len(user['picture'])
         else: 
             return 0
+
+
 
     def pushImageToUser(self, currentId, picture):
         pictureArraySize = self.getPictureArraySize(currentId)
@@ -59,5 +65,9 @@ class ImageService(ServiceClass):
         else:
             self.users.find_one_and_update({'_id' : ObjectId(currentId)}, \
                 {'$set' : {'picture.'+ str(index) : picture}}, upsert=True)
+
+    def deleteImageFromUserByPicture(self, currentId, picture):
+        self.users.find_one_and_update({'_id': ObjectId(currentId)}, \
+            {'$pull': {'picture' : picture}})
 
         

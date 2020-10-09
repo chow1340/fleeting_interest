@@ -20,7 +20,10 @@ class LocationService(ServiceClass):
          raise Exception("This class is a singleton!")
       else:
          LocationService.__instance = self    
-
+         self.mongoConnection = MongoConnectionConfig.getInstance()
+         self.mongo = self.mongoConnection.connect()
+         self.users = self.mongo.db.users
+         
     def updateLocation(self, location, currentId):
         user = dumps(self.users.find_one_and_update({'_id' : ObjectId(currentId)}, {'$set': {'location':location}}, upsert=False, projection={'password': False})) 
         return user
