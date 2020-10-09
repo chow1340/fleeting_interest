@@ -32,7 +32,7 @@ class MatchService(ServiceClass):
         for match in matchList:
             id= match['_id']
             user = self.users.find_one({'_id' : ObjectId(id)}, projection={'password': False})
-            result.append({"user":user})
+            result.append({"user":user, "chatId" : match["chatId"]})
             # result[id] = user
 
         return result
