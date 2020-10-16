@@ -1,12 +1,11 @@
 from flask import Flask, session, Blueprint
-from ServiceClass import ServiceClass
 from user.UserService import UserService
+from chat.ChatService import ChatService
 from bson import json_util, ObjectId
 from config.MongoConnectionConfig import MongoConnectionConfig
 
-class MatchService(ServiceClass):
+class MatchService():
 
-    userService = UserService.getInstance()
 
     __instance = None
     @staticmethod
@@ -25,6 +24,7 @@ class MatchService(ServiceClass):
          self.mongoConnection = MongoConnectionConfig.getInstance()
          self.mongo = self.mongoConnection.connect()
          self.users = self.mongo.db.users
+         self.chatService = ChatService.getInstance()
 
     def getMatchesByList(self, matchList):
         result = []
@@ -32,8 +32,10 @@ class MatchService(ServiceClass):
         for match in matchList:
             id= match['_id']
             user = self.users.find_one({'_id' : ObjectId(id)}, projection={'password': False})
-            result.append({"user":user, "chatId" : match["chatId"]})
-            # result[id] = user
+            
+            #Get chat
+            chat = self.chatService.getChat(match["chatId"])
+            result.append({"user":user, "chatId" : match["chatId"], "chat" : chat})
 
         return result
 

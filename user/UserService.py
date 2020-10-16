@@ -1,10 +1,9 @@
 from flask import Flask, render_template, url_for, request, session, redirect, Blueprint
-from ServiceClass import ServiceClass
 from bson import json_util, ObjectId
 from bson.json_util import dumps
 from config.MongoConnectionConfig import MongoConnectionConfig
 
-class UserService(ServiceClass):
+class UserService():
 
     __instance = None
 

@@ -1,4 +1,3 @@
-from ServiceClass import ServiceClass
 from config.MongoConnectionConfig import MongoConnectionConfig
 from settings import S3_BUCKETNAME
 from user.UserService import UserService
@@ -7,7 +6,7 @@ from bson import json_util, ObjectId
 import boto3
 
 
-class ImageService(ServiceClass):
+class ImageService():
     __instance = None
 
     userService = UserService.getInstance()

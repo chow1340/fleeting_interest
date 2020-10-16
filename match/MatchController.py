@@ -15,9 +15,9 @@ matchService = MatchService.getInstance()
 def getMatches():
     currentId = userService.getCurrentId()
     if currentId:
-        
         currentUser = userService.getCurrentUserProfile()
         matchList = currentUser['matchList']
         result = matchService.getMatchesByList(matchList)
 
+        
     return dumps(result)

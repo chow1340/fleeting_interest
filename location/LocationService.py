@@ -1,9 +1,8 @@
 from config.MongoConnectionConfig import MongoConnectionConfig
-from ServiceClass import ServiceClass
 from bson import json_util, ObjectId
 from bson.json_util import dumps
 
-class LocationService(ServiceClass):
+class LocationService():
 
     __instance = None
 
