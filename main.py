@@ -23,4 +23,4 @@ app.permanent_session_lifetime = timedelta(minutes=1440)
 if __name__ == '__main__':
     # TODO change this key
     app.secret_key = 'mysecret'
-    app.run(debug=True, host='192.168.2.40')
+    app.run(debug=True, host='192.168.2.40') #Primary address

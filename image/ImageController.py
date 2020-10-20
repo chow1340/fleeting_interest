@@ -44,7 +44,7 @@ def uploadFileAndUpdatePictureArrayOrder():
         if filename : 
             imageService.setImageToIndex(userService.getCurrentId(), index, filename)
 
-    return "Success"
+    return filename
 
 
 

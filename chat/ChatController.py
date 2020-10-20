@@ -18,11 +18,13 @@ def updateChatStatus():
 
     return "Updated Chat Status"
 
-@chat_controller.route('/api/chat/getChat', methods=['GET'])
-def getChat():
-    chatStatus = chatService.getChat(request.args.get("chatId"))
-    return dumps(chatStatus)
 
-# @chat_controller.route('/api/chat/setIsRead')
-# def setIsRead():
-#     chatService.setIsRead(request.get_json()['params']['isRead'])
+
+@chat_controller.route('/api/chat/setIsRead', methods=['POST'])
+def setIsRead():
+    chat = chatService.getChat(request.get_json()['params']['chatId'])
+    userId = userService.getCurrentId()
+    isRead = request.get_json()['params']['isRead']
+    chatService.setIsRead(chat, userId, isRead)
+
+    return "Updated Chat"

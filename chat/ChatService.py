@@ -27,7 +27,7 @@ class ChatService():
          
 
     def getChat(self, chatId):
-        chat = self.chat.find({'_id': ObjectId(chatId)})
+        chat = self.chat.find_one({'_id': ObjectId(chatId)})
         return chat
 
     def updateLastMessage(self, chatId, message):
@@ -42,6 +42,13 @@ class ChatService():
         self.chat.find_one_and_update({'_id': ObjectId(chatId)}, \
              {'$inc': {'totalMessages':1}})
 
-    # def setIsRead(self, chatId, userId, isRead):
-    #     self.chat.find_one_and_update({'_id': ObjectId(chatId)}, \
-    #         {})
+    def setIsRead(self, chat, userId, isRead):
+
+        if chat['user1']['_id'] == userId:
+            user = "user1"
+        else:
+            user = "user2"
+        self.chat.find_one_and_update({'_id': chat['_id']}, \
+            {'$set': {user + '.hasRead' : isRead}})
+
+        return
