@@ -16,8 +16,8 @@ def getMatches():
     currentId = userService.getCurrentId()
     if currentId:
         currentUser = userService.getCurrentUserProfile()
-        matchList = currentUser['matchList']
-        result = matchService.getMatchesByList(matchList)
+        matches = currentUser['matches']
+        result = matchService.getMatchesByList(matches)
 
         
     return dumps(result)

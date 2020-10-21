@@ -26,16 +26,15 @@ class MatchService():
          self.users = self.mongo.db.users
          self.chatService = ChatService.getInstance()
 
-    def getMatchesByList(self, matchList):
+    def getMatchesByList(self, matches):
         result = []
-
-        for match in matchList:
-            id= match['_id']
+        for match, matchObject in matches.items():
+            id = match
             user = self.users.find_one({'_id' : ObjectId(id)}, projection={'password': False})
             
             #Get chat
-            chat = self.chatService.getChat(match["chatId"])
-            result.append({"user":user, "chatId" : match["chatId"], "chat" : chat})
+            chat = self.chatService.getChat(matchObject["chatId"])
+            result.append({"user":user, "chatId" : matchObject["chatId"], "chat" : chat})
 
         return result
 

@@ -24,7 +24,8 @@ class LocationService():
          self.users = self.mongo.db.users
          
     def updateLocation(self, location, currentId):
-        user = dumps(self.users.find_one_and_update({'_id' : ObjectId(currentId)}, {'$set': {'location':location}}, upsert=False, projection={'password': False})) 
+        coordinates = [location['coords']['longitude'], location['coords']['latitude']]
+        user = dumps(self.users.find_one_and_update({'_id' : ObjectId(currentId)}, {'$set': {'location':location, 'coordinates':coordinates}}, upsert=False, projection={'password': False})) 
         return user
          
     def updateGeocode(self, geocode, currentId):
