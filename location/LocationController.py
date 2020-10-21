@@ -14,3 +14,10 @@ def updateLocation():
     locationService.updateLocation(request.get_json()['location'], userService.getCurrentId())
     user = locationService.updateGeocode(request.get_json()['geocode'], userService.getCurrentId())
     return user
+
+@location_controller.route('/api/location/getNearbyUsers', methods=['GET'])
+def getNearbyUsers():
+    currentUser = userService.getCurrentUserProfile()
+
+    users = locationService.getNearbyUsers(currentUser['coordinates'])
+    return users
