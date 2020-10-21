@@ -81,7 +81,7 @@ def getCurrentUser():
 @user_controller.route('/api/user/editProfile', methods=['POST'])
 def editProfile():
     users = mongo.db.users
-    newValues = request.get_json()['params']['currentProfile']
+    newValues = request.get_json()['currentProfile']
 
     if newValues:
         user = dumps(users.find_one_and_update({'_id' : ObjectId(newValues['_id']['$oid'])}, {'$set': {'first_name' : newValues['first_name'], \
