@@ -22,9 +22,9 @@ def updateChatStatus():
 
 @chat_controller.route('/api/chat/setIsRead', methods=['POST'])
 def setIsRead():
-    chat = chatService.getChat(request.get_json()['params']['chatId'])
+    chat = chatService.getChat(request.get_json()['chatId'])
     userId = userService.getCurrentId()
-    isRead = request.get_json()['params']['isRead']
+    isRead = request.get_json()['isRead']
     chatService.setIsRead(chat, userId, isRead)
 
     return "Updated Chat"

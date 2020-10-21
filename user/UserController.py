@@ -23,12 +23,11 @@ def test():
 @user_controller.route('/api/user/login', methods=['POST'])
 def login():
     users = mongo.db.users
-    login_user = users.find_one({'phone_number': request.get_json()['params']['phone_number']})
+    login_user = users.find_one({'phone_number': request.get_json()['phone_number']})
  
     if login_user:
-        if bcrypt.hashpw(request.get_json()['params']['password'].encode('utf-8'), login_user['password']) == login_user['password']:
-            session['phone_number'] = request.get_json()['params']['phone_number']
-            # objectId = json_util.dumps(ObjectId(login_user['_id']), default=json_util.default)
+        if bcrypt.hashpw(request.get_json()['password'].encode('utf-8'), login_user['password']) == login_user['password']:
+            session['phone_number'] = request.get_json()['phone_number']
             objectId = json.loads(json_util.dumps(login_user['_id']))
             session['_id'] = objectId['$oid']
             return "Login Successful"
@@ -44,19 +43,19 @@ def logout():
 def register():
     if request.method == 'POST':
         users = mongo.db.users
-        existing_user = users.find_one({'phone_number' : request.get_json()['params']['phone_number']})
+        existing_user = users.find_one({'phone_number' : request.get_json()['phone_number']})
 
         if existing_user is None:
-            hashpass = bcrypt.hashpw(request.get_json()['params']['password'].encode('utf-8'), bcrypt.gensalt())
+            hashpass = bcrypt.hashpw(request.get_json()['password'].encode('utf-8'), bcrypt.gensalt())
             user = users.insert({
-                'phone_number':request.get_json()['params']['phone_number'], 
+                'phone_number':request.get_json()['phone_number'], 
                 'password': hashpass,
                 'date_created': datetime.now(),
                 'first_name': "",
                 'last_name' : "",
                 })
-            session['phone_number'] =  request.get_json()['params']['phone_number']
-            session['_id'] = ObjectId(user['_id'])
+            session['phone_number'] =  request.get_json()['phone_number']
+            session['_id'] = user['_id']
 
             return "phone_number has been registered"
 
