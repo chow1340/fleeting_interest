@@ -35,11 +35,11 @@ class LocationService():
         user = dumps(self.users.find_one_and_update({'_id' : ObjectId(currentId)}, {'$set': {'geocode':geocode}}, upsert=False, projection={'password': False})) 
         return user
         
-    def getNearbyUsers(self, coordinates):
+    def getNearbyUsers(self, coordinates, maxDistance):
         users = dumps(self.users.find({"coordinates": {"$near" : 
             {"$geometry" : {
                 "type": "Point", "coordinates": coordinates
                 }, 
-            "$maxDistance" : 100
+            "$maxDistance" : maxDistance #In meters ?
             }}}))
         return users

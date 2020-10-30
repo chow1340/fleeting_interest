@@ -18,6 +18,6 @@ def updateLocation():
 @location_controller.route('/api/location/getNearbyUsers', methods=['GET'])
 def getNearbyUsers():
     currentUser = userService.getCurrentUserProfile()
-
-    users = locationService.getNearbyUsers(currentUser['coordinates'])
+    maxDistance = int(request.args.get('maxDistance'))
+    users = locationService.getNearbyUsers(currentUser['coordinates'], maxDistance)
     return users
